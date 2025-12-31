@@ -1,0 +1,36 @@
+# Dependências
+node_modules/
+
+# Build (caso você compile TS para JS)
+dist/
+build/
+
+# Variáveis de ambiente
+.env
+.env.local
+.env.development
+.env.production
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# Cache
+.cache/
+.tmp/
+
+# Coverage (testes)
+coverage/
+
+# IDEs / editores
+.vscode/
+.idea/
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+package-lock.json
