@@ -1,6 +1,7 @@
 import { app } from './app';
+import { AppDataSource } from './config/database/data-source';
 import { env } from './config/env';
-import { AppDataSource } from './database/data-source';
+
 
 async function bootstrap() {
   await AppDataSource.initialize();
