@@ -1,6 +1,10 @@
+import { AppDataSource } from "../config/database/data-source";
+import { User } from "../entities/User";
 
-import { AppDataSource } from '../config/database/data-source';
-import { User } from '../entities/User';
+type PaginatedQuery = {
+  page: number;
+  limit: number;
+};
 
 export class UserRepository {
   private repo = AppDataSource.getRepository(User);
@@ -12,8 +16,20 @@ export class UserRepository {
 
   findMany() {
     return this.repo.find({
-      order: { createdAt: 'DESC' },
+      order: { createdAt: "DESC" },
     });
+  }
+
+  async findManyPaginated({ page, limit }: PaginatedQuery) {
+    const skip = (page - 1) * limit; // skip é o offset
+
+    const [data, total] = await this.repo.findAndCount({
+      order: { createdAt: "DESC" },
+      take: limit,
+      skip,
+    });
+
+    return { data, total };
   }
 
   findById(id: string) {
@@ -24,7 +40,10 @@ export class UserRepository {
     return this.repo.findOne({ where: { email } });
   }
 
-  async update(id: string, data: Partial<Pick<User, 'name' | 'email' | 'password'>>) {
+  async update(
+    id: string,
+    data: Partial<Pick<User, "name" | "email" | "password">>
+  ) {
     await this.repo.update({ id }, data);
     return this.findById(id);
   }

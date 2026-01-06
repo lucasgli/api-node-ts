@@ -1,5 +1,5 @@
-import type { Request, Response } from 'express';
-import { UserService } from '../../services/user.service';
+import type { Request, Response } from "express";
+import { UserService } from "../../services/user.service";
 
 class UserController {
   private readonly service = new UserService();
@@ -8,10 +8,13 @@ class UserController {
     const user = await this.service.create(req.body);
     return res.status(201).json(user);
   }
+  async list(req: Request, res: Response) {
+    const page = Number(req.query.page ?? 1);
+    const limit = Number(req.query.limit ?? 10);
 
-  async list(_: Request, res: Response) {
-    const users = await this.service.list();
-    return res.json(users);
+    const result = await this.service.list({ page, limit });
+
+    return res.json(result);
   }
 
   async getById(req: Request, res: Response) {
