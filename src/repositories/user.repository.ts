@@ -4,6 +4,7 @@ import { User } from "../entities/User";
 type PaginatedQuery = {
   page: number;
   limit: number;
+  search?: string;
 };
 
 export class UserRepository {
@@ -20,14 +21,22 @@ export class UserRepository {
     });
   }
 
-  async findManyPaginated({ page, limit }: PaginatedQuery) {
-    const skip = (page - 1) * limit; // skip é o offset
+  async findManyPaginated({ page, limit, search }: PaginatedQuery) {
+    const skip = (page - 1) * limit;
 
-    const [data, total] = await this.repo.findAndCount({
-      order: { createdAt: "DESC" },
-      take: limit,
-      skip,
-    });
+    const qb = this.repo
+      .createQueryBuilder("user")
+      .orderBy("user.createdAt", "DESC")
+      .skip(skip)
+      .take(limit);
+
+    if (search) {
+      qb.where("user.name LIKE :search OR user.email LIKE :search", {
+        search: `%${search}%`,
+      });
+    }
+
+    const [data, total] = await qb.getManyAndCount();
 
     return { data, total };
   }

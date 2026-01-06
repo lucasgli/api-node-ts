@@ -8,14 +8,20 @@ class UserController {
     const user = await this.service.create(req.body);
     return res.status(201).json(user);
   }
-  async list(req: Request, res: Response) {
-    const page = Number(req.query.page ?? 1);
-    const limit = Number(req.query.limit ?? 10);
+  
+async list(req: Request, res: Response) {
+  const page = Number(req.query.page ?? 1);
+  const limit = Number(req.query.limit ?? 10);
+  const search = String(req.query.search ?? '').trim();
 
-    const result = await this.service.list({ page, limit });
+  const result = await this.service.list({
+    page,
+    limit,
+    search,
+  });
 
-    return res.json(result);
-  }
+  return res.json(result);
+}
 
   async getById(req: Request, res: Response) {
     const user = await this.service.getById(req.params.id);

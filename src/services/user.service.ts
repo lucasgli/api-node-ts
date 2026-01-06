@@ -17,6 +17,7 @@ type UpdateUserDTO = {
 type ListUsersDTO = {
   page?: number;
   limit?: number;
+  search?: string;
 };
 
 export class UserService {
@@ -49,14 +50,14 @@ export class UserService {
     }
   }
 
-  async list({ page = 1, limit = 10 }: ListUsersDTO = {}) {
-    const safePage = Number.isFinite(page) && page > 0 ? page : 1;
-    const safeLimit =
-      Number.isFinite(limit) && limit > 0 && limit <= 100 ? limit : 10;
+  async list({ page = 1, limit = 10, search }: ListUsersDTO = {}) {
+    const safePage = page > 0 ? page : 1;
+    const safeLimit = limit > 0 && limit <= 100 ? limit : 10;
 
     const { data, total } = await this.repo.findManyPaginated({
       page: safePage,
       limit: safeLimit,
+      search,
     });
 
     const totalPages = Math.max(1, Math.ceil(total / safeLimit));
@@ -69,6 +70,7 @@ export class UserService {
       totalPages,
     };
   }
+
 
   async getById(id: string) {
     const user = await this.repo.findById(id);
