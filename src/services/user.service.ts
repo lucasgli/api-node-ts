@@ -50,26 +50,18 @@ export class UserService {
     }
   }
 
-  async list({ page = 1, limit = 10, search }: ListUsersDTO = {}) {
-    const safePage = page > 0 ? page : 1;
-    const safeLimit = limit > 0 && limit <= 100 ? limit : 10;
+async list({ page = 1, limit = 10, search }: ListUsersDTO = {}) {
+  const { data, total } = await this.repo.findManyPaginated({
+    page,
+    limit,
+    search,
+  });
 
-    const { data, total } = await this.repo.findManyPaginated({
-      page: safePage,
-      limit: safeLimit,
-      search,
-    });
-
-    const totalPages = Math.max(1, Math.ceil(total / safeLimit));
-
-    return {
-      data: data.map((u) => this.sanitize(u)),
-      limit: safeLimit,
-      page: safePage,
-      total,
-      totalPages,
-    };
-  }
+  return {
+    data: data.map((u) => this.sanitize(u)),
+    total,
+  };
+}
 
 
   async getById(id: string) {
