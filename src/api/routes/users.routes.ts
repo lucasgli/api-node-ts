@@ -3,6 +3,7 @@ import { validate } from '../middlewares/validate.middleware';
 import { asyncHandler } from '../middlewares/asyncHandler';
 import { userController } from '../controllers/user.controller';
 import { userCreateSchema, userIdParamSchema, userUpdateSchema } from '../../schemas/user.schema';
+import { ensureAuth } from '../middlewares/ensureAuth.middleware';
 
 
 export const userRoutes = Router();
@@ -20,6 +21,7 @@ userRoutes.get(
 
 userRoutes.get(
   '/:id',
+  ensureAuth, // add auth
   validate({ params: userIdParamSchema }),
   asyncHandler((req, res) => userController.getById(req, res))
 );
