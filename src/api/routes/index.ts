@@ -5,6 +5,17 @@ import { authRoutes } from "./auth.routes";
 
 export const routes = Router();
 
+/**
+ * @openapi
+ * /health:
+ *   get:
+ *     summary: Health check
+ *     tags: [Health]
+ *     responses:
+ *       200:
+ *         description: API ok
+ */
+
 // Health
 routes.get("/health", healthController.handle);
 
